@@ -1,6 +1,6 @@
 #delimit;
 clear;
-odbc load,  exec("select * from das.das_allocation where fishery='MUL' and das_category='A' and fishing_year between 2004 and 2005;") $oracle_cxn;  
+odbc load,  exec("select * from das.das_allocation@GARFO_NEFSC where fishery='MUL' and das_category='A' and fishing_year between 2004 and 2005;") $oracle_cxn;  
 rename fishery fmp;
 rename das_category das_type;
 rename right_to_days_id mri;
@@ -16,7 +16,7 @@ save `das';
 
 
 clear;
-odbc load,  exec("select * from das2.allocation where plan='MUL' and category_name='A';") $oracle_cxn;  
+odbc load,  exec("select * from das2.allocation@GARFO_NEFSC where plan='MUL' and category_name='A';") $oracle_cxn;  
 rename plan fmp;
 rename category_name das_type;
 
@@ -31,7 +31,7 @@ save `das2', replace;
 /*AMS -- 2007 to Present */
 clear;
 
-odbc load,  exec("select *  from ams.allocation_tx where FMP='MULT' and das_type='A-DAYS';") $oracle_cxn;  
+odbc load,  exec("select *  from ams.allocation_tx@GARFO_NEFSC where FMP='MULT' and das_type='A-DAYS';") $oracle_cxn;  
 destring, replace;
 keep if fishing_year>=2009;
 
@@ -59,7 +59,7 @@ clear;
 
 
 
-odbc load,  exec("select per_num, right_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, remark, len, hp  from mqrs.mort_elig_criteria mq  
+odbc load,  exec("select per_num, right_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, remark, len, hp  from mqrs.mort_elig_criteria@GARFO_NEFSC mq  
 where fishery='MULTISPECIES' 
 AND date_eligible is not null 
 AND (date_cancelled>=to_date('05/01/2000','MM/DD/YYYY') or date_cancelled is null) 
@@ -77,7 +77,7 @@ select * from mort_elig_criteria where auth_id in(1179,1183,1187,1196,1219,1255,
 
  */
  clear;
-odbc load,  exec("select per_num, right_id, auth_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, remark, len, hp  from mqrs.mort_elig_criteria mq  
+odbc load,  exec("select per_num, right_id, auth_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, remark, len, hp  from mqrs.mort_elig_criteria@GARFO_NEFSC mq  
 where fishery='MULTISPECIES' AND
 auth_id in(1179,1183,1187,1196,1219,1255,1261,1293,1296,1362,1374,2423) 
 AND date_eligible is not null 
@@ -89,7 +89,7 @@ tempfile e1;
 save `e1', replace;
 clear;
 
-odbc load,  exec("select per_num, right_id, auth_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, remark, len, hp  from mqrs.mort_elig_criteria mq  
+odbc load,  exec("select per_num, right_id, auth_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, remark, len, hp  from mqrs.mort_elig_criteria@GARFO_NEFSC mq  
 where fishery='MULTISPECIES' AND
 auth_id in(1174,1176,1179,1183,1184,1187,1196,1209,1298,1358,1372) 
 AND date_eligible is not null 

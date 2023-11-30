@@ -11,7 +11,7 @@ save `dual', replace;
 
 
  clear;
-odbc load,  exec("select right_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, fishery from mqrs.mort_elig_criteria mq  
+odbc load,  exec("select right_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, fishery from mqrs.mort_elig_criteria@GARFO_NEFSC mq  
 where fishery in ('SCALLOP','GENERAL CATEGORY SCALLOP') AND date_eligible is not null 
 AND (date_cancelled>=to_date('05/01/2000','MM/DD/YYYY') or date_cancelled is null) 
 AND ((date_cancelled > date_eligible) or date_cancelled is null);") $oracle_cxn;  
