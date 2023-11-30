@@ -12,7 +12,7 @@ global user minyangWin;
 
 /*minyangWin is setup to connect to oracle yet */
 if strmatch("$user","minyangWin"){;
-global my_projdir "C:/Users/Min-Yang.Lee/Documents/READ-SSB-Lee-Counterfactual_Modeling_Data";
+global my_projdir "C:/Users/Min-Yang.Lee/Documents/READ-SSB-Lee-KA_Scallop";
 global oracle_cxn " $mysole_conn" ;
 
 };

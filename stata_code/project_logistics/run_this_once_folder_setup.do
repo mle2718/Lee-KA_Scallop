@@ -1,21 +1,8 @@
 version 15.1
 
 #delimit ;
-
-
-/*
-I used this to setup the folder structure, but it's easier to just pull the repository
-
-global user minyang;
-or 
-global user minyangWin;
-*/
-
-if strmatch("$user","minyang"){;
-global my_projdir "/home/mlee/Documents/projects/new-project-templates";
-};
 if strmatch("$user","minyangWin"){;
-global my_projdir "C:/Users/Min-Yang.Lee/Documents/READ-SSB-Lee-Counterfactual_Modeling_Data";
+global my_projdir "C:/Users/Min-Yang.Lee/Documents/READ-SSB-Lee-KA_Scallop";
 
 };
 
