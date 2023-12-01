@@ -3,7 +3,7 @@
 
 clear;
 odbc load, exec("select vp.ap_year, vp.ap_num, vp.vp_num, vp.plan, vp.cat, vp.start_date, vp.end_date, vp.date_expired, vp.date_canceled from vps_fishery_ner vp where 
-	ap_year between 1996 and $lastyr
+	ap_year between 2001 and $lastyr
     order by vp_num, ap_num;") $oracle_cxn;
     destring, replace;
     renvars, lower;
@@ -49,13 +49,13 @@ saveold $my_workdir/vps_fishery_raw_$today_date_string.dta, replace version(12);
 
 
 
-forvalues j=1996(1)$lastyr{;
+forvalues j=2001(1)$lastyr{;
 	gen a`j'=0;
 	local k=`j'+1;
 	replace a`j'=1 if start_date<mdy(5,1,`k') & myde>=mdy(5,1,`j');
 };
 
-collapse (sum) a1996-a$lastyr, by(vp_num plan cat);
+collapse (sum) a2001-a$lastyr, by(vp_num plan cat);
 foreach var of varlist a*{;
 	replace `var'=1 if `var'>=1;
 };
@@ -88,7 +88,7 @@ saveold $my_workdir/permit_working_$today_date_string.dta, replace version(12);
 clear;
 odbc load, exec("select ap_year, ap_num, vp_num, hull_id, ves_name, strt1, strt2, city, st, zip1, zip2, tel, hport, hpst, pport, ppst, len, crew, gtons, 
 ntons, vhp, blt, hold, toc,top, date_issued, date_canceled, max_trap_limit
-from vps_vessel where ap_year between 1996 and $lastyr;") $oracle_cxn;
+from vps_vessel where ap_year between 2001 and $lastyr;") $oracle_cxn;
     destring, replace;
     renvars, lower;
     gen mys=dofc(date_issued);
@@ -102,7 +102,7 @@ format date* %td;
 tempfile permit_working;
 save `permit_working', replace;
 
-forvalues j=1996(1)$lastyr{;
+forvalues j=2001(1)$lastyr{;
 	tempfile new;
 	local NEWfiles `"`NEWfiles'"`new'" "'  ;
 
@@ -128,13 +128,36 @@ rename vp_num permit;
 
 /* This bit joins them */
 
-merge 1:1 permit fishing_year using $my_workdir/permit_working_$today_date_string;
-saveold $my_workdir/permit_portfolio_$today_date_string, version(12) replace;
+merge m:1 permit fishing_year using $my_workdir/permit_working_$today_date_string;
+foreach var of varlist BLU_1-TLF_D{;
+	replace `var'=0 if `var'==.;
+};
+
+pause;
+/* keep only observations where a vessel has held at least 1 SC, SG, or LGC permit*/
+keep if fishing_year>=2001;
+
+egen scal=rowtotal(SC_* SG_* LGC_*);
+bysort permit: egen ts=total(scal);
+replace ts=ts>=1;
+keep if ts==1;
+
+save $my_workdir/permit_portfolio_$today_date_string, replace;
+
+preserve;
+keep permit;
+duplicates drop;
+save $my_workdir/permit_population_$today_date_string, replace;
 
 
-keep hull_id fishing_year max_trap_limit;
+ export delimited using "${network_temp_dir}\data_intermediate\permit_population_${today_date_string}.csv", replace
 
-saveold $my_workdir/lobster_traps_$today_date_string, version(12) replace;
+restore;
+
+
+keep permit hull_id fishing_year max_trap_limit;
+duplicates drop;
+save $my_workdir/lobster_traps_$today_date_string, replace;
 
 
 

@@ -10,7 +10,7 @@ global my_workdir  "${my_projdir}/data_folder/main";
 global results  "${my_projdir}/results";
 
 
-
+global network_temp_dir "V:\KA_Scallop\data" ;
 global spacepanels_data "C:/Users/Min-Yang.Lee/Documents/spacepanels/data_folder/main/veslog_species_huge_2023_11_29";
 global income_mobility "C:/Users/Min-Yang.Lee/Documents/incomemobility/data_folder/internal/nameclean";
 
@@ -47,18 +47,18 @@ do "${my_codedir}/cfdbs_data_dump.do";
 
 do "${my_codedir}/declaration_codes.do";
 
+/* these don't run 
+
+
 do "${my_codedir}/das_allocations_used.do";
 do "${my_codedir}/das_allocations.do";
+do "${my_codedir}/das_allocations_usedR.do";
+do "${my_codedir}/mort_elig_criteria_extractions.do";
+
+*/
 
 
 do "${my_codedir}/cr_boats.do";
-
-#delimit ;
-*do "das_allocations_used.do";
-do "${my_codedir}/das_allocations_usedR.do";
-
-
-do "${my_codedir}/mort_elig_criteria_extractions.do";
 
 
 /* Get the sector rosters and ACE holdings 
@@ -71,15 +71,28 @@ do "psc_extractor.do";
 do "ace_transfers.do";
 */
 
+#delimit ;
+
+/* this did run! */
+
 
 /* Get VTR data at the gearid level */
 do "${my_codedir}/veslog_gearid.do";
-/* build the permit portfolios */
+do "${my_codedir}/veslog_slimdown.do";
 
-do "${my_codedir}/permit_characteristics_extractions.do";
+
+
+/* need to pull in SFCLAM */
+
+
+
+
+
+
+
+/* build the permit portfolios */
 do "${my_codedir}/fishery_key_file.do";
 do "${my_codedir}/port_key_file.do";
-
 do "${my_codedir}/dealer_key_file.do";
 
 
