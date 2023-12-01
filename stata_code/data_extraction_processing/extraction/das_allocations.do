@@ -1,6 +1,6 @@
 #delimit;
 clear;
-odbc load,  exec("select * from das.das_allocation where fishery='MUL' and das_category='A' and fishing_year between 2004 and 2005;") $oracle_cxn;  
+odbc load,  exec("select * from das.das_allocation@GARFO_NEFSC where fishery='MUL' and das_category='A' and fishing_year between 2004 and 2005;") $oracle_cxn;  
 rename fishery fmp;
 rename das_category das_type;
 rename right_to_days_id mri;
@@ -29,7 +29,7 @@ save `das2', replace;
 /*AMS -- 2007 to Present */
 clear;
 
-odbc load,  exec("select *  from ams.allocation_tx where FMP='MULT' and das_type='A-DAYS';") $oracle_cxn;  
+odbc load,  exec("select *  from ams.allocation_tx@GARFO_NEFSC where FMP='MULT' and das_type='A-DAYS';") $oracle_cxn;  
 destring, replace;
 keep if fishing_year>=2009;
 

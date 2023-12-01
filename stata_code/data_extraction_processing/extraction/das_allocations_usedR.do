@@ -57,7 +57,7 @@ clear;
 
 odbc load,  exec("select du.fishing_year, du.das_transaction_id, du.permit_number, du.das_charged_days, tr.sailing_port, tr.sailing_state, tr.sail_date_time as date_sail, tr.landing_port, tr.landing_state, tr.landing_date_time as date_land,
 		tr.gillnet_vessel, tr.day_trip, tr.observer_onboard, tr.das_charged_fixed, tr.fishery_code, tr.vessel_name, du.trip_length_days 		
-	from das.das_used du, das.trips tr where du.das_transaction_id=tr.das_transaction_id and du.permit_number=tr.permit_number and du.das_category='A' and du.fishery='MUL';") $oracle_cxn;  
+	from das.das_used@GARFO_NEFSC du, das.trips@GARFO_NEFSC tr where du.das_transaction_id=tr.das_transaction_id and du.permit_number=tr.permit_number and du.das_category='A' and du.fishery='MUL';") $oracle_cxn;  
 	keep if inlist(fishing_year, 2004, 2005);
 rename permit permit;
 rename das_charged_days charge;
@@ -184,7 +184,7 @@ save `das2_usage', replace;
 
 
 clear;
-odbc load,  exec("select * from AMS.TRIP_AND_CHARGE where fmp='MULT' and DAS_TYPE='A-DAYS' and charge<>0 and fishing_year>=2009;") $oracle_cxn;  
+odbc load,  exec("select * from AMS.TRIP_AND_CHARGE@GARFO_NEFSC where fmp='MULT' and DAS_TYPE='A-DAYS' and charge<>0 and fishing_year>=2009;") $oracle_cxn;  
 drop running_clock observer rsa mult_override fmp trip_de-charge_uc trip_source fishing_area das_type tc_id charge_type; 
 rename das_id ams_das_id;
 rename trip_id ams_trip_id;

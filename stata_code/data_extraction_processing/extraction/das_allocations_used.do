@@ -39,7 +39,7 @@ clear;
 
 odbc load,  exec("select du.fishing_year, du.das_transaction_id, du.permit_number, du.das_charged_days, tr.sailing_port, tr.sailing_state, tr.sail_date_time as date_sail, tr.landing_port, tr.landing_state, tr.landing_date_time as date_land,
 		tr.gillnet_vessel, tr.day_trip, tr.observer_onboard, tr.das_charged_fixed, tr.fishery_code, tr.vessel_name 		
-	from das.das_used du, das.trips tr where du.das_transaction_id=tr.das_transaction_id and du.permit_number=tr.permit_number and du.das_category='A' and du.fishery='MUL';") $oracle_cxn;  
+	from das.das_used@GARFO_NEFSC du, das.trips@GARFO_NEFSC tr where du.das_transaction_id=tr.das_transaction_id and du.permit_number=tr.permit_number and du.das_category='A' and du.fishery='MUL';") $oracle_cxn;  
 	keep if inlist(fishing_year, 2004, 2005);
 rename permit permit;
 rename das_charged_days charge;
@@ -67,7 +67,7 @@ clear;
  A. Trips */
 odbc load,  exec(" select du.das_trip_id, du.allocation_use_type, du.au_date_time_debited, du.permit_debited, du.permit_credited, du.quantity, du.category_name, du.plan, du.right_id, du.credit_type, 
 du.fishing_year, du.dollar_value, activity_code, dt.permit_num, dt.sailing_port, dt.sailing_state, dt.trip_start, dt.trip_end, dt.landing_port, dt.landing_state
- from das2.allocation_use du, das2.das_trip dt
+ from das2.allocation_use@GARFO_NEFSC du, das2.das_trip@GARFO_NEFSC dt
  where du.category_name='A' and du.plan='MUL' and du.allocation_use_type='TRIP' and du.quantity<>0
  and du.das_trip_id=dt.das_trip_id;") $oracle_cxn;  
 
@@ -91,7 +91,7 @@ clear;
 
 odbc load,  exec("select du.das_trip_id, du.allocation_use_type, du.au_date_time_debited, du.pt_permit_debited, du.permit_debited, du.quantity, du.category_name, du.plan, du.right_id, du.credit_type, 
 du.fishing_year, activity_code, dt.permit_num, dt.sailing_port, dt.sailing_state, dt.trip_start, dt.trip_end, dt.landing_port, dt.landing_state
- from das2.private_transaction_use du, das2.das_trip dt
+ from das2.private_transaction_use@GARFO_NEFSC du, das2.das_trip@GARFO_NEFSC dt
  where du.category_name='A' and du.plan='MUL'  and du.quantity<>0
  and du.das_trip_id=dt.das_trip_id;") $oracle_cxn;  
 
@@ -131,7 +131,7 @@ gen schema="DAS2";
 save `das2_usage', replace;
 
 clear;
-odbc load,  exec("select * from AMS.TRIP_AND_CHARGE where fmp='MULT' and DAS_TYPE='A-DAYS' and charge<>0 and fishing_year>=2009;") $oracle_cxn;  
+odbc load,  exec("select * from AMS.TRIP_AND_CHARGE@GARFO_NEFSC where fmp='MULT' and DAS_TYPE='A-DAYS' and charge<>0 and fishing_year>=2009;") $oracle_cxn;  
 drop running_clock observer rsa mult_override fmp trip_de-charge_uc trip_source fishing_area das_type das_id trip_id tc_id charge_type; 
 
 rename permit_nbr permit;
@@ -177,7 +177,7 @@ clear;
 /* DAS schema data*/
 
 /* leases */
-odbc load, exec("select * from das.das_transfer_lease where fishery='MUL' and das_category='A' and TRANSACTION_TYPE='L' order by nmfs_approval_date desc;") $oracle_cxn;
+odbc load, exec("select * from das.das_transfer_lease@GARFO_NEFSC where fishery='MUL' and das_category='A' and TRANSACTION_TYPE='L' order by nmfs_approval_date desc;") $oracle_cxn;
 keep if inlist(fishing_year, 2004, 2005);
 rename grantor_right_to_days_id right_id_seller;
 rename grantee_right_to_days_id right_id_buyer;
@@ -203,7 +203,7 @@ save `dl1';
 /*DAS2.allocation_use
  B. LEASES*/
 clear;
-odbc load,  exec("select * from das2.allocation_use where category_name='A' and plan='MUL' and allocation_use_type='LEASE' and approval_status='APPROVED' ;") $oracle_cxn;  
+odbc load,  exec("select * from das2.allocation_use@GARFO_NEFSC where category_name='A' and plan='MUL' and allocation_use_type='LEASE' and approval_status='APPROVED' ;") $oracle_cxn;  
 keep if fishing_year>=2006 & fishing_year<=2008;
 
 gen date_of_trade=dofc(au_date_time);
@@ -245,7 +245,7 @@ save `das2_leases', replace;
 
 /*AMS lease data */
 clear;
-odbc load,  exec("select lease_exch_id,from_permit, to_permit, from_right, to_right, fishing_year, quantity, price, approval_date from ams.lease_exch_applic@sole 
+odbc load,  exec("select lease_exch_id,from_permit, to_permit, from_right, to_right, fishing_year, quantity, price, approval_date from ams.lease_exch_applic@GARFO_NEFSC 
 	where FMP='MULT' and from_das_type='A-DAYS' and approval_status='APPROVED' and fishing_year>=2009;") $oracle_cxn;  
 destring, replace;
 rename to_permit permit_buyer;
