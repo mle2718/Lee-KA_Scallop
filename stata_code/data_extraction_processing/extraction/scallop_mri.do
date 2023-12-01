@@ -2,10 +2,11 @@
 #delimit;
 
 clear;
-	odbc load,  exec("select * from mlee.IFQ_MRI;") $oracle_cxn;  
+/*odbc load,  exec("select * from bgaluardi.ifq_scal_combo;") $mygarfo_conn;   */
+odbc load,  exec("select * from mlee.IFQ_MRI;") $oracle_cxn;   
+rename mri right_id;
 gen das_ifq=1;
 tempfile dual;
-rename mri right_id;
 save `dual', replace;
 
 
