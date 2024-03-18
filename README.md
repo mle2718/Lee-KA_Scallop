@@ -15,7 +15,18 @@ For stata users, there is a description [here](/documentation/project_logistics.
 
 # About the Data 
 
-Data vintages. 
+Data vintages -- I append "YYYY_MM_DD"  to the file name to track when I've extracted data
+
+## Keyfiles
+
+The following datasets are keyfiles that are useful for decoding numeric codes into somthing that is intelligible.
+
+1.  ams_activity_codes and das -- the activity code is the type of fishing that a vessel declared into.  For scallop, vessels may declare into days at Sea or access area trips.   
+2.  cams_port_codes -- these decode a six digit numeric code to a port name and state
+3.  dealer_keyfile -- this converts a dealer identification number to a business with a street address.
+4.  fishery_kefile- this is a description of a Plan and Category. The most relevant ones for this project will be plan='SC', 'LGC' and  'SCG'
+5.  species keyfile- this contains the itis tsn and the market and grade codes. The most relevant rows are its_tsn=79718.
+
 
 ## Ownership data
 
@@ -43,10 +54,19 @@ The dataset "scallop_rights" contains the
 permit_portfolio -- 
 	This contains one row per vessel-year. It includes hull_id, permit, vessel name, a mailing address, hailing port, "principal port", vessel size (gross and net tons, length), maximum crew.  It also has a set of categorical variables to indicate the type of permit a vessel held.  The ones to focus on are SC_*, SG_* (scallop general category), and LGC_* (Limited access general category).  I've marked those with the categorical "has_scallop_permit"
 
+## VMS data
+
+The VMS data from 2008 to present is storedin VMS1_.Rds.  Older data (pre 2008) is stored in VMSold_.Rds  I have constrained the datasets to permits that held a scallop permit.
+These two datasets contain the permit number, lat and lon, and a timestamp. I used Oracle's to_char(POS_SENT_DATE,'YYYY MON DD HH24:MI:SS'), I believe the underlying data is timezone encoded and this should handle daylight savings time automatically.
 
 
 
 
+
+
+
+## Trips and Landings
+This is extracted from CAMS_LAND and CAMS_SUBTRIP.  Each CAMSID represents a trip.  
 
 
 
