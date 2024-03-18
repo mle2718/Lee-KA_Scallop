@@ -4,7 +4,7 @@
 #delimit ;
 
  
-global oracle_cxn " $mysole_conn";
+global oracle_cxn " $myNEFSC_USERS_conn";
 global my_codedir "${my_projdir}/stata_code/data_extraction_processing/extraction";
 global my_workdir  "${my_projdir}/data_folder/main";
 global results  "${my_projdir}/results";
