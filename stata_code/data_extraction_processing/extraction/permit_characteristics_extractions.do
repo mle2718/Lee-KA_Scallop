@@ -151,7 +151,23 @@ save $my_workdir/permit_portfolio_$today_date_string, replace;
 keep permit;
 duplicates drop;
 save $my_workdir/permit_population_$today_date_string, replace;
+/* push this to oracle, so I can subset on it easily */
 
+# delimit ;
+local nl "lower";
+local oracle_no_lower: list global(mynova_conn) - local(nl);
+
+
+capture odbc exec("DROP TABLE mlee.KA_permits;"), `oracle_no_lower' ;
+
+
+
+odbc exec("CREATE TABLE mlee.KA_permits (
+    permit NUMBER(6)
+	);" ) , `oracle_no_lower';
+
+
+odbc insert permit, table("mlee.KA_permits") `oracle_no_lower' ;
 
 
 
