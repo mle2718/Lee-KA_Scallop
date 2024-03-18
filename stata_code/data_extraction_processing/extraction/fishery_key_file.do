@@ -9,7 +9,7 @@ Part C. Port codes
 
 /* Part A. PLAN and Category */
 clear;
-odbc load, exec("select fishery_id, plan, cat, permit_year, descr, moratorium_fishery, mandatory_reporting, per_yr_start_date, per_yr_end_date from valid_fishery;")  $oracle_cxn; 
+odbc load, exec("select fishery_id, plan, cat, permit_year, descr, moratorium_fishery, mandatory_reporting, per_yr_start_date, per_yr_end_date from nefsc_garfo.permit_valid_fishery;")  $oracle_cxn; 
 renvars, lower;
 notes: made by "fishery_key_file.do";
 notes: moratorium_fishery=T means limited access. You can also verify this from the "descr" field. ;
