@@ -54,7 +54,7 @@ forvalues j=2003(1)$lastyr{;
 	replace a`j'=1 if start_date<mdy(5,1,`k') & myde>=mdy(5,1,`j');
 };
 
-collapse (sum) a2001-a$lastyr, by(vp_num plan cat);
+collapse (sum) a2003-a$lastyr, by(vp_num plan cat);
 foreach var of varlist a*{;
 	replace `var'=1 if `var'>=1;
 };
