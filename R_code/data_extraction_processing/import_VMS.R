@@ -62,18 +62,18 @@ saveRDS(RESULT.COMPILED, file=here("KA_scallop","data","data_intermediate", VMS_
 
 
 
-# already done
-# CURRENT.QUERY = "select EXTRACT(YEAR FROM POS_SENT_DATE) as YEAR, VESSEL_PERMIT as permit, LAT_GIS, LON_GIS, to_char(POS_SENT_DATE,'YYYY MON DD HH24:MI:SS') as POS_SENT_DATE, PREV_LAT_GIS, PREV_LON_GIS,AVERAGE_COURSE AS AVG_COURSE, AVERAGE_SPEED AS AVG_SPEED,to_char(PREV_POS_SENT_DATE,'YYYY MON DD HH24:MI:SS') as PREV_POS_SENT_DATE from VMS.OLD_VMS_1997_TO_MAY_2008 WHERE EXTRACT(YEAR FROM POS_SENT_DATE) BETWEEN 2001 and 2007 AND LAT_GIS BETWEEN 30 and 50 AND LON_GIS BETWEEN -80 and -60"
-# 
-# OLD_VMS<-tbl(con,sql(CURRENT.QUERY)) %>% 
-#   collect() %>%
-#   dplyr::inner_join(permit_universe, by=join_by(PERMIT)) %>% 
-#   group_by(PERMIT) %>%
-#   arrange(POS_SENT_DATE, .by_group=TRUE)
-# 
-# dbDisconnect(con)
-# 
-# VMS_NAME2 <-paste0("VMSold_",vintage_string,".Rds")
-# 
-# saveRDS(OLD_VMS, file=here("KA_scallop","data","data_intermediate", VMS_NAME2))
+already done
+CURRENT.QUERY = "select EXTRACT(YEAR FROM POS_SENT_DATE) as YEAR, VESSEL_PERMIT as permit, LAT_GIS, LON_GIS, to_char(POS_SENT_DATE,'YYYY MON DD HH24:MI:SS') as POS_SENT_DATE, PREV_LAT_GIS, PREV_LON_GIS,AVERAGE_COURSE AS AVG_COURSE, AVERAGE_SPEED AS AVG_SPEED,to_char(PREV_POS_SENT_DATE,'YYYY MON DD HH24:MI:SS') as PREV_POS_SENT_DATE from VMS.OLD_VMS_1997_TO_MAY_2008 WHERE EXTRACT(YEAR FROM POS_SENT_DATE) BETWEEN 2001 and 2007 AND LAT_GIS BETWEEN 30 and 50 AND LON_GIS BETWEEN -80 and -60"
+
+OLD_VMS<-tbl(con,sql(CURRENT.QUERY)) %>%
+  collect() %>%
+  dplyr::inner_join(permit_universe, by=join_by(PERMIT)) %>%
+  group_by(PERMIT) %>%
+  arrange(POS_SENT_DATE, .by_group=TRUE)
+
+dbDisconnect(con)
+
+VMS_NAME2 <-paste0("VMSold_",vintage_string,".Rds")
+
+saveRDS(OLD_VMS, file=here("KA_scallop","data","data_intermediate", VMS_NAME2))
 
