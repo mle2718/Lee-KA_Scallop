@@ -7,7 +7,7 @@ Dealer keyfile
 /* Part A. PLAN and Category */
 clear;
 
-odbc load, exec("select year, dnum, dlr, strt1, strt2, city, st, doi, doc from permit.dealer where year>=2000 order by year;") $oracle_cxn;
+odbc load, exec("select year, dnum, dlr, strt1, strt2, city, st, doi, doc from permit.dealer where year>=2003 order by year;") $oracle_cxn;
 destring, replace;
 
 
