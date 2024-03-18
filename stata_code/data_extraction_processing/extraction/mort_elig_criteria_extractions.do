@@ -24,7 +24,7 @@ save `das2', replace;
 /*AMS -- 2007 to Present */
 clear;
 tempfile ams;
-odbc load,  exec("select fishing_year ,unit, das_type, root_mri, fmp, sum(quantity) as quantity  from ams.allocation_tx@GARFO_NEFSC where FMP in ('SCAL', 'SCAG') and allocation_type in ('BASE', 'BASE ADJUST', 'CARRY OVER', 'CARRY OVER ADJUST', OVERAGE', 'SANCTION') 
+odbc load,  exec("select fishing_year ,unit, das_type, root_mri, fmp, sum(quantity) as quantity  from NEFSC_GARFO.AMS_ALLOCATION_TX where FMP in ('SCAL', 'SCAG') and allocation_type in ('BASE', 'BASE ADJUST', 'CARRY OVER', 'CARRY OVER ADJUST', OVERAGE', 'SANCTION') 
 	group by fishing_year ,unit, das_type, root_mri, fmp
 	order by fishing_year, root_mri, fmp, das_type, unit;") $oracle_cxn;  
 destring, replace;
@@ -44,7 +44,7 @@ clear;
 
 
 
-
+/*
 
 odbc load,  exec("select per_num, right_id, hull_id, vessel, date_eligible, date_cancelled, auth_type, remark, len, hp , fishery from mqrs.mort_elig_criteria@GARFO_NEFSC mq  
 where fishery in ('SCALLOP', 'GENERAL CATEGORY SCALLOP') 
@@ -52,6 +52,9 @@ AND date_eligible is not null
 AND (date_cancelled>=to_date('05/01/2000','MM/DD/YYYY') or date_cancelled is null) 
 AND ((date_cancelled > date_eligible) or date_cancelled is null);") $oracle_cxn;  
 preserve;
+
+
+*/
 
 
 

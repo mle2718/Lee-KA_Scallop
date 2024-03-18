@@ -2,8 +2,8 @@
 #delimit;
 
 clear;
-odbc load, exec("select vp.ap_year, vp.ap_num, vp.vp_num, vp.plan, vp.cat, vp.start_date, vp.end_date, vp.date_expired, vp.date_canceled from vps_fishery_ner vp where 
-	ap_year between 2001 and $lastyr
+odbc load, exec("select vp.ap_year, vp.ap_num, vp.vp_num, vp.plan, vp.cat, vp.start_date, vp.end_date, vp.date_expired, vp.date_canceled from nefsc_garfo.permit_vps_fishery_ner vp where 
+	ap_year between 2003 and $lastyr
     order by vp_num, ap_num;") $oracle_cxn;
     destring, replace;
     renvars, lower;
@@ -23,8 +23,7 @@ gen  myde=min(end_date, date_expired, date_canceled);
 format myde %td;
 drop if start_date>=myde | start_date>=myde;
 
-saveold $my_workdir/vps_fishery_raw_$today_date_string.dta, replace version(12);
-
+save  $my_workdir/vps_fishery_raw_$today_date_string.dta, replace;
 
 /*I want to make a dataset that contains the VP_NUM, FY, PLANS_CATS that were active in a FY */
 
@@ -49,7 +48,7 @@ saveold $my_workdir/vps_fishery_raw_$today_date_string.dta, replace version(12);
 
 
 
-forvalues j=2001(1)$lastyr{;
+forvalues j=2003(1)$lastyr{;
 	gen a`j'=0;
 	local k=`j'+1;
 	replace a`j'=1 if start_date<mdy(5,1,`k') & myde>=mdy(5,1,`j');
@@ -77,7 +76,7 @@ renvars a*, predrop(1);
 rename vp_num permit;
 qui compress;
 notes: made by "permit_characteristics_extractions.do";
-saveold $my_workdir/permit_working_$today_date_string.dta, replace version(12);
+save $my_workdir/permit_working_$today_date_string.dta, replace;
 
 
 
@@ -88,7 +87,7 @@ saveold $my_workdir/permit_working_$today_date_string.dta, replace version(12);
 clear;
 odbc load, exec("select ap_year, ap_num, vp_num, hull_id, ves_name, strt1, strt2, city, st, zip1, zip2, tel, hport, hpst, pport, ppst, len, crew, gtons, 
 ntons, vhp, blt, hold, toc,top, date_issued, date_canceled, max_trap_limit
-from vps_vessel where ap_year between 2001 and $lastyr;") $oracle_cxn;
+from nefsc_garfo.permit_vps_vessel where ap_year between 2003 and $lastyr;") $oracle_cxn;
     destring, replace;
     renvars, lower;
     gen mys=dofc(date_issued);
@@ -102,7 +101,7 @@ format date* %td;
 tempfile permit_working;
 save `permit_working', replace;
 
-forvalues j=2001(1)$lastyr{;
+forvalues j=2003(1)$lastyr{;
 	tempfile new;
 	local NEWfiles `"`NEWfiles'"`new'" "'  ;
 
@@ -135,30 +134,23 @@ foreach var of varlist BLU_1-TLF_D{;
 
 pause;
 /* keep only observations where a vessel has held at least 1 SC, SG, or LGC permit*/
-keep if fishing_year>=2001;
+keep if fishing_year>=2003;
 
 egen scal=rowtotal(SC_* SG_* LGC_*);
 bysort permit: egen ts=total(scal);
 replace ts=ts>=1;
 keep if ts==1;
+drop scal;
+rename ts has_scallop_permit;
+drop _merge;
+/*need to add definitions of TOP and TOC */
+
 
 save $my_workdir/permit_portfolio_$today_date_string, replace;
 
-preserve;
 keep permit;
 duplicates drop;
 save $my_workdir/permit_population_$today_date_string, replace;
-
-
- export delimited using "${network_temp_dir}\data_intermediate\permit_population_${today_date_string}.csv", replace
-
-restore;
-
-
-keep permit hull_id fishing_year max_trap_limit;
-duplicates drop;
-save $my_workdir/lobster_traps_$today_date_string, replace;
-
 
 
 

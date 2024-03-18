@@ -1,25 +1,22 @@
 #delimit;
 
-/* gone from sole and no dblink
+/* When sole goes down, this chunk will break because there is not dblink */
 clear;
-odbc load,  exec("select * from das2.allocation where plan='MUL' and category_name='A';") $oracle_cxn;  
+odbc load,  exec("select * from das.allocation@garfo_nefsc where plan='SC';") $mysole_conn;  
 rename plan fmp;
 rename category_name das_type;
 
 destring, replace;
-keep if fishing_year>=2006 & fishing_year<=2008;
+keep if fishing_year<2007;
 
-tempfile das2;
-collapse (sum) quantity, by(right_id credit_type fishing_year);
-compress;
-save `das2', replace;
-*/
+save $my_workdir/das_allocations_$today_date_string.dta, replace ;
+
 
 
 /*AMS -- 2007 to Present */
 clear;
 
-odbc load,  exec("select *  from ams.allocation_tx@GARFO_NEFSC where FMP in ('SCAL', 'SCAG') ;") $oracle_cxn;  
+odbc load,  exec("select *  from NEFSC_GARFO.AMS_ALLOCATION_TX where FMP in ('SCAL', 'SCAG') ;") $myNEFSC_USERS_conn;  
 destring, replace;
 keep if fishing_year>=2007;
 
@@ -30,13 +27,12 @@ compress;
 rename right_id mri;
 preserve;
 keep if inlist(credit_type,"LEASE IN", "LEASE OUT");
-save $my_workdir/das_leases_$today_date_string.dta, replace ;
+save $my_workdir/ams_leases_$today_date_string.dta, replace ;
 
 restore;
 drop if inlist(credit_type,"LEASE IN", "LEASE OUT");
 collapse (sum) quantity, by(mri fishing_year);
 rename quantity categoryA_DAS;
-save `das2', replace;
 
 sort mri fishing_year;
-save $my_workdir/das_allocations_$today_date_string.dta, replace ;
+save $my_workdir/ams_allocations_$today_date_string.dta, replace ;
