@@ -56,7 +56,7 @@ permit_portfolio --
 
 ## VMS data
 
-The VMS data from 2008 to present is storedin VMS1_.Rds.  Older data (pre 2008) is stored in VMSold_.Rds  I have constrained the datasets to permits that held a scallop permit.
+The VMS data from 2008 to present is stored in VMS1_.Rds.  Older data (pre 2008) is stored in VMSold_.Rds  I have constrained the datasets to permits that held a scallop permit.
 These two datasets contain the permit number, lat and lon, and a timestamp. I used Oracle's to_char(POS_SENT_DATE,'YYYY MON DD HH24:MI:SS'), I believe the underlying data is timezone encoded and this should handle daylight savings time automatically.
 
 
@@ -75,7 +75,7 @@ This repository is a scientific product and is not official communication of the
 
 
 1. who worked on this project:  Min-Yang Lee
-1. when this project was created: 2015, uploaded to github in August 2023. 
+1. when this project was created: 2023. 
 1. what the project does: extracts data for the Karl Aspelund's project.
 1. why the project is useful:  Gets data 
 1. how users can get started with the project: Download and follow the readme
