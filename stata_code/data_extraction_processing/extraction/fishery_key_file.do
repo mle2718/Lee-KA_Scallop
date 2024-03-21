@@ -19,7 +19,7 @@ save $my_workdir/fishery_keyfile_$today_date_string.dta, replace;
 
 /* Part B. Species Codes*/
 clear;
-odbc load,  exec("select distinct species_itis as itis_tsn, common_name, scientific_name, grade_code, grade_desc, market_code, market_desc from cfdbs.species_itis_ne;") $oracle_cxn;
+odbc load,  exec("select distinct species_itis as itis_tsn, common_name, scientific_name, grade_code, grade_desc, market_code, market_desc from nefsc_garfo.cfdbs_species_itis_ne;") $oracle_cxn;
 destring, replace;
 compress;
 renvars, lower;
