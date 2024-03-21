@@ -63,10 +63,38 @@ These two datasets contain the permit number, lat and lon, and a timestamp. I us
 
 
 
-
-
 ## Trips and Landings
-This is extracted from CAMS_LAND and CAMS_SUBTRIP.  Each CAMSID represents a trip.  
+
+Trips and Landings come from [CAMS](http://nerswind/cams/cams_documentation/), which is a new system that matches trip reports, dealer reports, and all sorts of other data.
+
+Records that match at the level of trip and ITIS_GROUP1 are assigned “MATCH” status. VTR records that match at the trip level but not at the ITIS_GROUP1 level are labeled as “VTR_ORPHAN_SPECIES”. VTR records that do not match at the trip level are labeled as “VTR_ORPHAN_TRIP”. Dealer records that match at the trip level but not at the ITIS_GROUP1 level receive a status of “DLR_ORPHAN_SPECIES” and those that do not match at the trip level have a status of “DLR_ORPHAN_TRIP”. There are also VTR records that do not match to dealer records but have zero landings (VTR_KEPT = 0). These are divided into status = ‘VTR_DISCARD’ (VTR_KEPT = 0 & VTR_DISCARD > 0) and status = ‘VTR_NO_CATCH’ (VTR_KEPT = 0 & VTR_DISCARD = 0). These VTR records with no landings are unioned to the combined DLR-VTR landings. Finally, the VTR records with positive landings (VTR_KEPT > 0) that were indicated as not being sold to the dealer (disposition NOT_SOLD and BHC) are unioned to the combined DLR-VTR data and assigned a status of “VTR_NOT_SOLD”.
+
+
+CAMS_LAND contains transaction level landings. A transaction is the transfer from a vessel to a dealer of a particular market category and grade of fish.  For scallops, the market categories are things like U10, 10-20, 20-30, etc. For cod, this would be something like Scrod, Small, Market, Large, or Whale.  For scallops, the grade codes are "Meat, Shell-on."  For Cod, the grade codes could be "Gutted", "Gutted Head off", "Round", "Gutted Head on."  This will be useful for constructing revenue and prices.  I have extracted *all* records.
+
+CAMS_SUBTRIP contains "logbook level" information on trips.  Each CAMSID represents a trip.  Distinct "CAMSID + SUBTRIP" correspond to a "subtrip."  I have extracted records for permits that have ever had a scallop permit.
+
+CAMS_SUBTRIP and CAMS_LAND should be joined on "CAMSID and SUBTRIP."
+
+```
+global data_vintage 2024_03_20
+clear
+use cams_subtrip_${data_vintage}.dta
+bysort camsid subtrip: assert _N==1
+merge  1:m camsid subtrip using cams_land_${data_vintage}
+```
+You should expect this merge to produce:
+rows in "subtrip" with no landings (_merge==1) -- this could means a vessel went out fishing, but did not land.See the VTR_ACTIVITY and VTR_ACTIVITY_DESC fields.
+rows in "land" with not trip (_merge=2). These are trips by vessels without a scallop permit and are therefore outside the population. They can be dropped when constructing 'trip' information.
+
+
+VTR trip-level mismatches (status = ‘VTR_ORPHAN_TRIPS’) are considered either preliminary until dealer reports are entered or bad data that might be duplication of dealer trip orphans (status = ‘DLR_ORPHAN_TRIPS’) and are therefore not included in the official record of landings in CAMS_LAND. These VTR trip orphans are separated into their own identical table, CAMS_VTR_ORPHANS and the associated subtrips in CAMS_VTR_ORPHANS_SUBTRIP
+
+I've included these as well.
+
+The cams_land_description dataset describes the columns in ``cams_land'' and ``cams_land_VTR_ORPHANS_''
+
+The cams_subtrip_description datsest describe the columns in ``cams_subtrip'' and ``cams_vtr_orphans_subtrip''. There are additional columns in the raw data that I did not extract. 
 
 
 
