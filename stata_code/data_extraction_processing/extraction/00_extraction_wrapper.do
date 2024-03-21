@@ -26,9 +26,6 @@ timer on 1;
 local date: display %td_CCYY_NN_DD date(c(current_date), "DMY");
 global today_date_string = subinstr(trim("`date'"), " " , "_", .);
 
-global pass groundfish;
-
-
 global firstyr 2001;
 global secondyr =$firstyr+1;
 
