@@ -1,4 +1,4 @@
-/*This extracts data for Anna.  There is a collection of do files that does the actual work, this is essentially a wrapper and table of contents. 
+/*This extracts data for Karl's Scallop project.  There is a collection of do files that does the actual work, this is essentially a wrapper and table of contents. 
  */
 
 #delimit ;
@@ -26,17 +26,17 @@ timer on 1;
 local date: display %td_CCYY_NN_DD date(c(current_date), "DMY");
 global today_date_string = subinstr(trim("`date'"), " " , "_", .);
 
-global firstyr 2001;
+global firstyr 2004;
 global secondyr =$firstyr+1;
 
 global lastyr 2022;
-global firstders 2004;
+
+
 
 do "${my_codedir}/construct_owners.do";
 
 do "${my_codedir}/scallop_mri.do";
 do "${my_codedir}/permit_characteristics_extractions.do";
-
 do "${my_codedir}/declaration_codes.do";
 
 
@@ -62,14 +62,14 @@ do "${my_codedir}/das_allocations_usedR.do";
 
 
 do "${my_codedir}/mort_elig_criteria_extractions.do";
+do "${my_codedir}/cr_boats.do";
 
 */
 
 
-do "${my_codedir}/cr_boats.do";
 
 
-
+# delimit ;
 
 
 do "${my_codedir}/cams_data_dump.do";
@@ -77,16 +77,13 @@ do "${my_codedir}/cams_data_dump.do";
 
 
 /* Get VTR data at the gearid level */
-do "${my_codedir}/veslog_gearid.do";
-do "${my_codedir}/veslog_slimdown.do";
 
 
-
-/* need to pull in SFCLAM */
+/* need to pull in SFCLAM 
 
 do "${my_codedir}/processed_data_subset.do";
-do "${my_codedir}/final_geoid_clean.do";
-do "${my_codedir}/copyover_operator_data.do"
+do "${my_codedir}/final_geoid_clean.do";*/
+do "${my_codedir}/copyover_operator_data.do";
 
 
 
