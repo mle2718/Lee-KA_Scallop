@@ -9,7 +9,7 @@ local land_vars CAMSID, SUBTRIP, DOCID, VTRSERNO, DATE_TRIP, DLR_DATE, YEAR, MON
 clear;
 timer clear 99;
 timer on 99;
-	odbc load,  exec("select `land_vars' from CAMS_GARFO.CAMS_LAND where year>=2004 and REC=0;") $oracle_cxn;
+	odbc load,  exec("select `land_vars' from CAMS_LAND where year>=2004 and REC=0;") $oracle_cxn;
 timer off 99;
 	renvarlab, lower;
 	destring subtrip docid dlrid dlr_utilcd itis_tsn negear area dlr_mkt dlr_grade dlr_disp port, replace;
@@ -23,7 +23,7 @@ clear;
 timer clear 98;
 timer on 98;
 
-	odbc load,  exec("select `land_vars' from CAMS_GARFO.CAMS_VTR_ORPHANS where year>=2004 and REC=0;") $oracle_cxn;
+	odbc load,  exec("select `land_vars' from CAMS_VTR_ORPHANS where year>=2004 and REC=0;") $oracle_cxn;
 timer off 98;
 
 	renvarlab, lower;
@@ -34,7 +34,7 @@ save $my_workdir/cams_land_vtr_orphans_$today_date_string.dta, replace ;
 
 clear;
 
-odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_GARFO' and table_name='CAMS_LAND' order by column_name;") $oracle_cxn ; 
+odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_ and table_name='CAMS_LAND' order by column_name;") $oracle_cxn ; 
 
 save $my_workdir/cams_land_description_$today_date_string.dta, replace ;
 
@@ -52,7 +52,7 @@ clear;
 timer clear 97;
 timer on 97;
 
-odbc load,  exec("select `trip_vars' from CAMS_GARFO.CAMS_SUBTRIP where year>=2004 and permit in (select permit from mlee.KA_PERMITS);") $oracle_cxn;
+odbc load,  exec("select `trip_vars' from CAMS_SUBTRIP where year>=2004 and permit in (select permit from mlee.KA_PERMITS);") $oracle_cxn;
 timer off 97;
 	renvars, lower;
 	destring permit docid subtrip area negear vtr_activity effort_imp sectid, replace;
@@ -69,7 +69,7 @@ timer on 96;
 
 
 clear;
-odbc load,  exec("select `trip_vars' from CAMS_GARFO.CAMS_VTR_ORPHANS_SUBTRIP where year>=2004 and permit in (select permit from mlee.KA_PERMITS);") $oracle_cxn;
+odbc load,  exec("select `trip_vars' from CAMS_VTR_ORPHANS_SUBTRIP where year>=2004 and permit in (select permit from mlee.KA_PERMITS);") $oracle_cxn;
 timer off 96;
 renvars, lower;
 destring permit docid subtrip area negear vtr_activity effort_imp sectid, replace;
@@ -81,7 +81,7 @@ save $my_workdir/cams_vtr_orphans_subtrip_$today_date_string.dta, replace ;
 
 
 clear;
-odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_GARFO' and table_name='CAMS_SUBTRIP' order by column_name;") $oracle_cxn ; 
+odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_ and table_name='CAMS_SUBTRIP' order by column_name;") $oracle_cxn ; 
 
 save $my_workdir/cams_subtrip_description_$today_date_string.dta, replace ;
 
