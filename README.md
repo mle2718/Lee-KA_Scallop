@@ -65,7 +65,7 @@ These two datasets contain the permit number, lat and lon, and a timestamp. I us
 
 ## Trips and Landings
 
-Trips and Landings come from [CAMS](http://nerswind/cams/cams_documentation/), which is a new system that matches trip reports, dealer reports, and all sorts of other data.
+Trips and Landings come from [CAMS](https://www.greateratlantic.fisheries.noaa.gov/ro/fso/reports/cams/cams_documentation/), which is a new system that matches trip reports, dealer reports, and all sorts of other data.
 
 Records that match at the level of trip and ITIS_GROUP1 are assigned “MATCH” status. VTR records that match at the trip level but not at the ITIS_GROUP1 level are labeled as “VTR_ORPHAN_SPECIES”. VTR records that do not match at the trip level are labeled as “VTR_ORPHAN_TRIP”. Dealer records that match at the trip level but not at the ITIS_GROUP1 level receive a status of “DLR_ORPHAN_SPECIES” and those that do not match at the trip level have a status of “DLR_ORPHAN_TRIP”. There are also VTR records that do not match to dealer records but have zero landings (VTR_KEPT = 0). These are divided into status = ‘VTR_DISCARD’ (VTR_KEPT = 0 & VTR_DISCARD > 0) and status = ‘VTR_NO_CATCH’ (VTR_KEPT = 0 & VTR_DISCARD = 0). These VTR records with no landings are unioned to the combined DLR-VTR landings. Finally, the VTR records with positive landings (VTR_KEPT > 0) that were indicated as not being sold to the dealer (disposition NOT_SOLD and BHC) are unioned to the combined DLR-VTR data and assigned a status of “VTR_NOT_SOLD”.
 
