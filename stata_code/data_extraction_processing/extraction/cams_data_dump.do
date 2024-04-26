@@ -34,7 +34,7 @@ save $my_workdir/cams_land_vtr_orphans_$today_date_string.dta, replace ;
 
 clear;
 
-odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_ and table_name='CAMS_LAND' order by column_name;") $oracle_cxn ; 
+odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_GARFO' and table_name='CAMS_LAND' order by column_name;") $oracle_cxn ; 
 
 save $my_workdir/cams_land_description_$today_date_string.dta, replace ;
 
@@ -81,7 +81,7 @@ save $my_workdir/cams_vtr_orphans_subtrip_$today_date_string.dta, replace ;
 
 
 clear;
-odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_ and table_name='CAMS_SUBTRIP' order by column_name;") $oracle_cxn ; 
+odbc load, exec("select table_name, column_name, comments from all_col_comments where owner='CAMS_GARFO' and table_name='CAMS_SUBTRIP' order by column_name;") $oracle_cxn ; 
 
 save $my_workdir/cams_subtrip_description_$today_date_string.dta, replace ;
 
