@@ -35,7 +35,6 @@ jdbc load,  exec("select category_name as fishing_area, right_id as mri, fishing
 group by right_id, category_name, fishing_year, plan, credit_type, unit_of_measure") case(lower);  
 
 destring, replace;
-keep if fishing_year>=2004 & fishing_year<=2006;
 
 gen source="DAS2G";
 
