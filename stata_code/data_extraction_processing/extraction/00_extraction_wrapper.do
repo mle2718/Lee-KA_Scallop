@@ -52,11 +52,6 @@ do "${my_codedir}/dealer_key_file.do";
 
 
 
-/*
-do "${my_codedir}/das_allocations.do";
-do "${my_codedir}/das_allocations_usedR.do";
-*/
-
 
 /* these don't run 
 
@@ -85,6 +80,22 @@ do "${my_codedir}/processed_data_subset.do";
 do "${my_codedir}/final_geoid_clean.do";*/
 do "${my_codedir}/copyover_operator_data.do";
 
+
+
+
+
+
+
+
+
+
+
+
+
+/* Data straight from GARFO. */
+
+do "${my_codedir}/das_allocations.do";
+do "${my_codedir}/das_allocations_usedR.do";
 
 
 log close;

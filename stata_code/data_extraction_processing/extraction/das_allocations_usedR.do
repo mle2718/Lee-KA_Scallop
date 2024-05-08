@@ -30,31 +30,44 @@ tempfile das2_usage das1_usage reg_use2006 das2a initial vaf;
 
 
 
-/* DAS schema data*/
+/* DAS schema data */
 /* usage */
 #delimit ;
 clear;
 
-odbc load,  exec("select du.fishing_year, du.das_transaction_id, du.permit_number as permit, du.das_charged_days as charge, tr.sail_date_time as date_sail, tr.landing_date_time as date_land, tr.observer_onboard, tr.fishery_code as activity_code, tr.vessel_name, du.trip_length_days 		
-	from das.das_used@GARFO_NEFSC du, das.trips@GARFO_NEFSC tr where du.das_transaction_id=tr.das_transaction_id and du.permit_number=tr.permit_number and du.fishery='SCA' and fishing_year between 2004 and 2006 and charge>0;") $oracle_cxn;  
 
-gen schema="DAS";
+jdbc connect, jar("$jar")  driverclass("$classname")  url("$GARFO_URL")  user("$myuid") password("$mygarfopwd");
 
-save `das1_usage',replace;
+jdbc load, exec("select du.das_trip_id, dt.vms_trip_id, du.permit_debited as permit,  dt.activity_code,  dt.trip_start as date_sail, dt.trip_end as date_land,  dt.observer , du.fishing_year,
+du.allocation_use_type, du.credit_type as das_type, du.quantity as charge, du.category_name as fishing_area, du.credit_type from das2.allocation_use du , das2.das_trip dt
+    where du.das_trip_id=dt.das_trip_id
+    and 
+    du.plan='SC' and du.quantity>0 order by date_sail") case(lower);  
+
+gen source="DAS2G";
+gen fishing_hours=hours(date_land-date_sail);
+gen fishing_days=fishing_hours/24;
+
+
+save $my_workdir/das2_usage_$today_date_string.dta, replace;
+
 
 
 /* this query works */
 
+#delimit ;
 
 clear;
-odbc load,  exec("select das_id as ams_das_id, trip_id as ams_trip_id, permit_nbr as permit, activity_code, date_sail, date_land, observer, fishing_year, fishing_area, das_type, charge from AMS.TRIP_AND_CHARGE@GARFO_NEFSC where fmp='SCAL' and charge<>0 and fishing_year>=2007;") $oracle_cxn;  
+odbc load,  exec("select das_id as ams_das_id, trip_id as ams_trip_id, permit_nbr as permit, activity_code, date_sail, date_land, observer, fishing_year, fishing_area, das_type, charge from NEFSC_GARFO.AMS_TRIP_AND_CHARGE where fmp='SCAL' and charge<>0 and fishing_year>=2007;") $myNEFSC_USERS_conn;  
 destring, replace;
 compress;
+gen fishing_hours=hours(date_land-date_sail);
+gen fishing_days=fishing_hours/24;
 
 
-gen schema="AMS";
+gen source="AMS";
 tempfile ams; 
-save `ams', replace;
+save $my_workdir/ams_usage_$today_date_string.dta, replace;
 
 
 
@@ -62,68 +75,6 @@ save `ams', replace;
 
 
 
-/* not sure where this dataset comes from  */
-use $my_workdir/ams_activity_codes.dta, replace;
-keep if fmp=="SCAL";
-keep activity_code activity_description charge_name das_category;
-gen str4 schema="AMS";
 
-tempfile ams_das2;
-save `ams_das2';
-
-use `ams', replace;
-merge m:1 schema activity_code using `ams_das2', keep( 1 3);
-assert _merge==3;
-drop _merge;
-save `ams', replace;
-append using `das2_usage';
-
-
-gen fishing_hours=hours(date_land-date_sail);
-
-order fishing_days charge_by_hand external_charge, after(charge);
-compress;
-rename das_trip_id das2_trip_id;
-order das_transaction das2_trip_id ams_trip_id ams_das_id;
-drop plan category_name;
-
-
-save $my_workdir/das_usage_$today_date_string.dta, replace;
-
-
-
-
-/*
-/*AMS lease data */
-
-odbc load,  exec("select lease_exch_id,from_permit, to_permit, from_right, to_right, fishing_year, quantity, price, approval_date from ams.lease_exch_applic@das08_11g.nero.gl.nmfs.gov 
-	where FMP='MULT' and from_das_type='A-DAYS' and approval_status='APPROVED' and fishing_year>=2009;") dsn("cuda") user(mlee) password($mynero_pwd) lower clear;
-destring, replace;
-rename to_permit permit_buyer;
-rename from_permit permit_seller;
-rename to_right right_id_buyer;
-rename from_right right_id_seller;
-compress;
-rename approval_date date_of_trade;
-rename price dollar_value;
-replace date_of_trade=dofc(date_of_trade);
-format date_of_trade %td;
-
-
-gen schema="AMS" ;
-
-
-
-/*stack on DAS2 and DAS leases */
-append using `das2_leases';
-append using `dl1';
-/* fix another broken entry */
-
-replace date=mdy(month(date),day(date),2004)    if transfer_id==815
-saveold $my_workdir/leases_$today_date_string.dta, replace version(12);
-
-
-
-*/
 
 
